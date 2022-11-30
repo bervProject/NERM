@@ -35,4 +35,4 @@ steps:
     applicationName: 'note-app'
     environmentName: 'Noteapp-env'
     applicationType: 'aspnetCoreLinux'
-    dotnetPublishPath: '$(build.artifactStagingDirectory)'
+    dotnetPublishPath: '$(build.artifactStagingDirectory)/NoteApp.zip'
