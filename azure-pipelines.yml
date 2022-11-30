@@ -33,12 +33,3 @@ steps:
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'NoteApp'
-
-- task: BeanstalkDeployApplication@1
-  inputs:
-    awsCredentials: 'AWS (Main)'
-    regionName: 'ap-southeast-3'
-    applicationName: 'note-app'
-    environmentName: 'Noteapp-env'
-    applicationType: 'aspnetCoreLinux'
-    dotnetPublishPath: '$(build.artifactStagingDirectory)/NoteApp.zip'
