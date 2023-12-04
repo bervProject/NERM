@@ -7,19 +7,29 @@ export class FetchData extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { notes: [], loading: true };
+        this.state = { notes: [], loading: true, keyword: '' };
         this.deleteHandler = this.deleteHandler.bind(this);
         this.populateNoteData = this.populateNoteData.bind(this);
+        this.setKeyword = this.setKeyword.bind(this);
     }
 
     componentDidMount() {
         this.populateNoteData();
     }
 
-    static renderNotesTable(notes, deleteHandler) {
+    setKeyword(event) {
+        let value = event.target.value;
+        this.setState({
+            keyword: value,
+        });
+        this.populateNoteData(value);
+    }
+
+    static renderNotesTable(notes, deleteHandler, keyword, searchHandler) {
         return (
             <div>
                 <Link className="btn btn-primary" to="/note-form">Create</Link>
+                <input onChange={searchHandler} name='search' value={keyword} />
                 <table className='table table-striped' aria-labelledby="tabelLabel">
                     <thead>
                         <tr>
@@ -27,6 +37,7 @@ export class FetchData extends Component {
                             <th>Updated Date Time</th>
                             <th>Title</th>
                             <th>Description</th>
+                            <th>Tags</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -37,6 +48,7 @@ export class FetchData extends Component {
                                 <td>{new Date(note.updateDateTimeOffset).toLocaleString()}</td>
                                 <td>{note.title}</td>
                                 <td>{note.description}</td>
+                                <td>{Array.isArray(note.tags) ? note.tags.join(", ") : null}</td>
                                 <td>
                                     <p><Link to={`/note-form/${note.id}`} className="btn btn-warning">Edit</Link></p>
                                     <p><button className="btn btn-danger" onClick={() => deleteHandler(note.id)}>Delete</button></p>
@@ -53,7 +65,7 @@ export class FetchData extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : FetchData.renderNotesTable(this.state.notes, this.deleteHandler);
+            : FetchData.renderNotesTable(this.state.notes, this.deleteHandler, this.state.keyword, this.setKeyword);
 
         return (
             <div>
@@ -64,8 +76,13 @@ export class FetchData extends Component {
         );
     }
 
-    async populateNoteData() {
-        const response = await fetch('note');
+    async populateNoteData(keyword) {
+        let url = "note";
+        if (keyword)
+        {
+            url += `?keyword=${keyword}`
+        }
+        const response = await fetch(url);
         const data = await response.json();
         this.setState({ notes: data, loading: false });
     }

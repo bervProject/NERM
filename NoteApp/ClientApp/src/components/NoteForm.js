@@ -22,7 +22,7 @@ class NoteFormComponent extends Component {
                     this.setState({
                         title: data.title,
                         description: data.description,
-                        tags: data.tags,
+                        tags: data.tags ?? [],
                         loading: false
                     });
                 }).catch(err => {
@@ -69,7 +69,7 @@ class NoteFormComponent extends Component {
             const request = {
                 method: this.state.id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: this.state.title, description: this.state.description })
+                body: JSON.stringify({ title: this.state.title, description: this.state.description, tags: this.state.tags })
             }
             const path = this.state.id ? `note/${this.state.id}` : 'note'
             fetch(path, request)

@@ -11,7 +11,7 @@ namespace NoteApp.Models
         public Guid Id { get; set; }
         public string Title { get; set; } = default!;
         public string Description { get; set; } = default!;
-        public List<string> Tags { get; set; } = default!;
+        public List<string> Tags { get; set; }
         public DateTimeOffset CreateDateTimeOffset { get; set; }
         public DateTimeOffset UpdateDateTimeOffset { get; set; }
     }
