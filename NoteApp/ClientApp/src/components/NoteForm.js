@@ -7,9 +7,10 @@ class NoteFormComponent extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { id: props?.router?.params?.id, title: '', description: '', redirect: false, loading: true };
+        this.state = { id: props?.router?.params?.id, title: '', description: '', tags: [], redirect: false, loading: true };
         this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -21,6 +22,7 @@ class NoteFormComponent extends Component {
                     this.setState({
                         title: data.title,
                         description: data.description,
+                        tags: data.tags,
                         loading: false
                     });
                 }).catch(err => {
@@ -43,6 +45,21 @@ class NoteFormComponent extends Component {
     handleDescriptionChange(event) {
         this.setState({
             description: event.target.value
+        });
+    }
+
+    handleTagsChange(event) {
+        let value = event.target.value;
+        let exist = this.state.tags.find(x => x === value);
+        let arrayData = this.state.tags;
+        if (!exist)
+        {
+            this.state.tags.push(value);
+        } else {
+            arrayData = this.state.tags.filter(x => x !== value);
+        }
+        this.setState({
+            tags: arrayData,
         });
     }
 
@@ -90,6 +107,16 @@ class NoteFormComponent extends Component {
                                     <div className="col form-group">
                                         <label for="exampleInputDescription1">Description</label>
                                         <textarea className="form-control" id="exampleInputDescription1" placeholder="Description" required value={this.state.description} onChange={this.handleDescriptionChange} />
+                                    </div>
+                                </div>
+                                <div className="row mt-2">
+                                    <div className="col form-group">
+                                        <label for="exampleInputDescription1">Tags</label>
+                                        <select multiple className="form-control" id="exampleInputTags" placeholder="Tags" required value={this.state.tags} onChange={this.handleTagsChange} >
+                                            <option>Life</option>
+                                            <option>General</option>
+                                            <option>Career</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="row mt-2">

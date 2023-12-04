@@ -8,5 +8,6 @@ namespace NoteApp.Models.Request
         public string Title { get; set; } = default!;
         [Required]
         public string Description { get; set; } = default!;
+        public List<string> Tags { get; set; } = default!;
     }
 }
