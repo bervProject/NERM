@@ -22,10 +22,20 @@ namespace NoteApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Note>> GetAsync()
+        public async Task<IEnumerable<Note>> GetAsync([FromQuery] string keyword = "")
         {
             var filterBuilder = new FilterDefinitionBuilder<Note>();
-            var response = await _notesCollection.FindAsync(filterBuilder.Empty);
+            var withKeyword = !string.IsNullOrWhiteSpace(keyword);
+            FilterDefinition<Note> def;
+            if (withKeyword)
+            {
+                def = filterBuilder.Where(x => x.Title.Contains(keyword) || x.Description.Contains(keyword));
+            }
+            else
+            {
+                def = filterBuilder.Empty;
+            }
+            var response = await _notesCollection.FindAsync(def);
             var responseData = new List<Note>();
             while (response != null && (await response.MoveNextAsync()))
             {
@@ -36,7 +46,7 @@ namespace NoteApp.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<Note?> GetAsync(Guid id)
+        public async Task<Note?> GetAsyncById(Guid id)
         {
             var response = await _notesCollection.FindSync(note => note.Id == id).FirstAsync();
             return response;
@@ -50,6 +60,7 @@ namespace NoteApp.Controllers
                 Id = Guid.NewGuid(),
                 Title = request.Title,
                 Description = request.Description,
+                Tags = request.Tags,
                 CreateDateTimeOffset = DateTimeOffset.Now,
                 UpdateDateTimeOffset = DateTimeOffset.Now
             };
@@ -65,6 +76,7 @@ namespace NoteApp.Controllers
             var updateDefinition = updateBuilder
                 .Set(x => x.Title, request.Title)
                 .Set(x => x.Description, request.Description)
+                .Set(x => x.Tags, request.Tags)
                 .Set(x => x.UpdateDateTimeOffset, DateTimeOffset.Now);
             await _notesCollection.UpdateOneAsync(filterBuilder.Eq(x => x.Id, id), updateDefinition);
             return new { Id = id };
