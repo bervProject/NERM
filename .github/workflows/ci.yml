@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        node-version: [20.x, 22.x]
+        node-version: [22.x, 24.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
     - uses: actions/checkout@v5
@@ -30,3 +30,4 @@ jobs:
       working-directory: NoteApp/ClientApp
     - name: Build
       run: dotnet build --no-restore
+
